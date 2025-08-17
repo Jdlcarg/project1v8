@@ -1,0 +1,392 @@
+root@softwarepar:~#  psql 'postgresql://neondb_owner:npg_ygZPzEhSBe80@ep-wispy-mode-acik8cvu-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+psql (17.5 (Ubuntu 17.5-1.pgdg24.04+1))
+psql (17.5 (Ubuntu 17.5-1.pgdg24.04+1))
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off, ALPN: postgresql)
+Type "help" for help.
+
+neondb=> -- Verificar columnas actuales de products
+\d products
+
+-- Agregar columnas faltantes si no existen
+ALTER TABLE products
+ADD COLUMN IF NOT EXISTS image TEXT,
+ADD COLUMN IF NOT EXISTS category TEXT,
+ADD COLUMN IF NOT EXISTS stock INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS tags TEXT[];
+
+-- Actualizar productos existentes con datos por defecto
+UPDATE products
+SET
+    image = COALESCE(image, '/placeholder-product.jpg'),
+    category = COALESCE(category, 'educativo'),
+    stock = COALESCE(stock, 10),
+    featured = COALESCE(featured, FALSE),
+    tags = COALESCE(tags, ARRAY['educativo'])
+WHERE image IS NULL OR category IS NULL OR stock IS NULL OR featured IS NULL OR tags IS NULL;
+                               Table "public.products"
+   Column    |            Type             | Collation | Nullable |      Default
+-------------+-----------------------------+-----------+----------+-------------------
+ id          | character varying           |           | not null | gen_random_uuid()
+ name        | text                        |           | not null |
+ description | text                        |           | not null |
+ price       | numeric(10,2)               |           | not null |
+ image_url   | text                        |           | not null |
+ type        | text                        |           | not null |
+ age_range   | text                        |           | not null |
+ category    | text                        |           | not null |
+ stock       | integer                     |           |          |
+ is_active   | boolean                     |           | not null | true
+ created_at  | timestamp without time zone |           |          | now()
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (id)
+Referenced by:
+    TABLE "order_items" CONSTRAINT "order_items_product_id_products_id_fk" FOREIGN KEY (product_id) REFERENCES products(id)
+    TABLE "user_favorites" CONSTRAINT "user_favorites_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+
+\d: extra argument "--" ignored
+\d: extra argument "Agregar" ignored
+\d: extra argument "columnas" ignored
+\d: extra argument "faltantes" ignored
+\d: extra argument "si" ignored
+\d: extra argument "no" ignored
+\d: extra argument "existen" ignored
+\d: extra argument "ALTER" ignored
+\d: extra argument "TABLE" ignored
+\d: extra argument "products" ignored
+\d: extra argument "ADD" ignored
+\d: extra argument "COLUMN" ignored
+\d: extra argument "IF" ignored
+\d: extra argument "NOT" ignored
+\d: extra argument "EXISTS" ignored
+\d: extra argument "image" ignored
+\d: extra argument "TEXT," ignored
+\d: extra argument "ADD" ignored
+\d: extra argument "COLUMN" ignored
+\d: extra argument "IF" ignored
+\d: extra argument "NOT" ignored
+\d: extra argument "EXISTS" ignored
+\d: extra argument "category" ignored
+\d: extra argument "TEXT," ignored
+\d: extra argument "ADD" ignored
+\d: extra argument "COLUMN" ignored
+\d: extra argument "IF" ignored
+\d: extra argument "NOT" ignored
+\d: extra argument "EXISTS" ignored
+\d: extra argument "stock" ignored
+\d: extra argument "INTEGER" ignored
+\d: extra argument "DEFAULT" ignored
+\d: extra argument "0," ignored
+\d: extra argument "ADD" ignored
+\d: extra argument "COLUMN" ignored
+\d: extra argument "IF" ignored
+\d: extra argument "NOT" ignored
+\d: extra argument "EXISTS" ignored
+\d: extra argument "featured" ignored
+\d: extra argument "BOOLEAN" ignored
+\d: extra argument "DEFAULT" ignored
+\d: extra argument "FALSE," ignored
+\d: extra argument "ADD" ignored
+\d: extra argument "COLUMN" ignored
+\d: extra argument "IF" ignored
+\d: extra argument "NOT" ignored
+\d: extra argument "EXISTS" ignored
+\d: extra argument "tags" ignored
+\d: extra argument "TEXT[];" ignored
+\d: extra argument "--" ignored
+\d: extra argument "Actualizar" ignored
+\d: extra argument "productos" ignored
+\d: extra argument "existentes" ignored
+\d: extra argument "con" ignored
+\d: extra argument "datos" ignored
+\d: extra argument "por" ignored
+\d: extra argument "defecto" ignored
+\d: extra argument "UPDATE" ignored
+\d: extra argument "products" ignored
+\d: extra argument "SET" ignored
+\d: extra argument "image" ignored
+\d: extra argument "=" ignored
+\d: extra argument "COALESCE(image," ignored
+\d: extra argument "/placeholder-product.jpg)," ignored
+\d: extra argument "category" ignored
+\d: extra argument "=" ignored
+\d: extra argument "COALESCE(category," ignored
+\d: extra argument "educativo)," ignored
+\d: extra argument "stock" ignored
+\d: extra argument "=" ignored
+\d: extra argument "COALESCE(stock," ignored
+\d: extra argument "10)," ignored
+\d: extra argument "featured" ignored
+\d: extra argument "=" ignored
+\d: extra argument "COALESCE(featured," ignored
+\d: extra argument "FALSE)," ignored
+\d: extra argument "tags" ignored
+\d: extra argument "=" ignored
+\d: extra argument "COALESCE(tags," ignored
+\d: extra argument "ARRAY[educativo])" ignored
+\d: extra argument "WHERE" ignored
+\d: extra argument "image" ignored
+\d: extra argument "IS" ignored
+\d: extra argument "NULL" ignored
+\d: extra argument "OR" ignored
+\d: extra argument "category" ignored
+\d: extra argument "IS" ignored
+\d: extra argument "NULL" ignored
+\d: extra argument "OR" ignored
+\d: extra argument "stock" ignored
+\d: extra argument "IS" ignored
+\d: extra argument "NULL" ignored
+\d: extra argument "OR" ignored
+\d: extra argument "featured" ignored
+\d: extra argument "IS" ignored
+\d: extra argument "NULL" ignored
+\d: extra argument "OR" ignored
+\d: extra argument "tags" ignored
+\d: extra argument "IS" ignored
+\d: extra argument "NULL;" ignored
+neondb=> ALTER TABLE products
+ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS tags TEXT[];
+
+ALTER TABLE products
+ADD COLUMN IF NOT EXISTS image TEXT;
+
+UPDATE products
+SET
+    featured = COALESCE(featured, FALSE),
+    tags = COALESCE(tags, ARRAY['educativo']),
+    image = COALESCE(image, image_url)
+WHERE featured IS NULL OR tags IS NULL OR image IS NULL;
+ALTER TABLE
+ALTER TABLE
+UPDATE 6
+neondb=> -- Verificar estructura actual de la tabla products
+\d products;
+
+-- Agregar columnas faltantes si no existen
+ALTER TABLE products
+ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP NOT NULL DEFAULT NOW();
+
+-- Actualizar productos existentes con valores por defecto
+UPDATE products
+SET image = 'https://via.placeholder.com/300x300?text=Producto'
+WHERE image = '' OR image IS NULL;
+
+-- Verificar estructura final
+\d products;
+                               Table "public.products"
+   Column    |            Type             | Collation | Nullable |      Default
+-------------+-----------------------------+-----------+----------+-------------------
+ id          | character varying           |           | not null | gen_random_uuid()
+ name        | text                        |           | not null |
+ description | text                        |           | not null |
+ price       | numeric(10,2)               |           | not null |
+ image_url   | text                        |           | not null |
+ type        | text                        |           | not null |
+ age_range   | text                        |           | not null |
+ category    | text                        |           | not null |
+ stock       | integer                     |           |          |
+ is_active   | boolean                     |           | not null | true
+ created_at  | timestamp without time zone |           |          | now()
+ featured    | boolean                     |           |          | false
+ tags        | text[]                      |           |          |
+ image       | text                        |           |          |
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (id)
+Referenced by:
+    TABLE "order_items" CONSTRAINT "order_items_product_id_products_id_fk" FOREIGN KEY (product_id) REFERENCES products(id)
+    TABLE "user_favorites" CONSTRAINT "user_favorites_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+
+\d: extra argument "--" ignored
+\d: extra argument "Agregar" ignored
+\d: extra argument "columnas" ignored
+\d: extra argument "faltantes" ignored
+\d: extra argument "si" ignored
+\d: extra argument "no" ignored
+\d: extra argument "existen" ignored
+\d: extra argument "ALTER" ignored
+\d: extra argument "TABLE" ignored
+\d: extra argument "products" ignored
+\d: extra argument "ADD" ignored
+\d: extra argument "COLUMN" ignored
+\d: extra argument "IF" ignored
+\d: extra argument "NOT" ignored
+\d: extra argument "EXISTS" ignored
+\d: extra argument "updated_at" ignored
+\d: extra argument "TIMESTAMP" ignored
+\d: extra argument "NOT" ignored
+\d: extra argument "NULL" ignored
+\d: extra argument "DEFAULT" ignored
+\d: extra argument "NOW();" ignored
+\d: extra argument "--" ignored
+\d: extra argument "Actualizar" ignored
+\d: extra argument "productos" ignored
+\d: extra argument "existentes" ignored
+\d: extra argument "con" ignored
+\d: extra argument "valores" ignored
+\d: extra argument "por" ignored
+\d: extra argument "defecto" ignored
+\d: extra argument "UPDATE" ignored
+\d: extra argument "products" ignored
+\d: extra argument "SET" ignored
+\d: extra argument "image" ignored
+\d: extra argument "=" ignored
+\d: extra argument "https://via.placeholder.com/300x300?text=Producto" ignored
+\d: extra argument "WHERE" ignored
+\d: extra argument "image" ignored
+\d: extra argument "=" ignored
+\d: extra argument "" ignored
+\d: extra argument "OR" ignored
+\d: extra argument "image" ignored
+\d: extra argument "IS" ignored
+\d: extra argument "NULL;" ignored
+\d: extra argument "--" ignored
+\d: extra argument "Verificar" ignored
+\d: extra argument "estructura" ignored
+\d: extra argument "final" ignored
+                               Table "public.products"
+   Column    |            Type             | Collation | Nullable |      Default
+-------------+-----------------------------+-----------+----------+-------------------
+ id          | character varying           |           | not null | gen_random_uuid()
+ name        | text                        |           | not null |
+ description | text                        |           | not null |
+ price       | numeric(10,2)               |           | not null |
+ image_url   | text                        |           | not null |
+ type        | text                        |           | not null |
+ age_range   | text                        |           | not null |
+ category    | text                        |           | not null |
+ stock       | integer                     |           |          |
+ is_active   | boolean                     |           | not null | true
+ created_at  | timestamp without time zone |           |          | now()
+ featured    | boolean                     |           |          | false
+ tags        | text[]                      |           |          |
+ image       | text                        |           |          |
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (id)
+Referenced by:
+    TABLE "order_items" CONSTRAINT "order_items_product_id_products_id_fk" FOREIGN KEY (product_id) REFERENCES products(id)
+    TABLE "user_favorites" CONSTRAINT "user_favorites_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+
+neondb=> -- Agregar columna updated_at si no existe
+ALTER TABLE products
+ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW();
+
+-- Actualizar productos existentes con image desde image_url
+UPDATE products
+SET image = COALESCE(image, image_url, 'https://via.placeholder.com/300x300?text=Producto')
+WHERE image IS NULL OR image = '';
+
+-- Actualizar todos los updated_at con la fecha actual
+UPDATE products
+SET updated_at = NOW()
+WHERE updated_at IS NULL;
+ALTER TABLE
+UPDATE 0
+UPDATE 0
+neondb=> -- Verificar estructura de la tabla products
+\d products
+
+-- Verificar que todos los productos tengan imagen y updated_at
+SELECT id, name, image, image_url, created_at, updated_at FROM products;
+
+-- Verificar conteo de productos activos
+SELECT COUNT(*) as total_productos FROM products WHERE is_active = true;
+
+-- Verificar que no hay valores NULL críticos
+SELECT
+    COUNT(*) as total,
+    COUNT(image) as con_imagen,
+    COUNT(updated_at) as con_updated_at,
+    COUNT(*) - COUNT(image) as sin_imagen,
+    COUNT(*) - COUNT(updated_at) as sin_updated_at
+FROM products;
+                               Table "public.products"
+   Column    |            Type             | Collation | Nullable |      Default
+-------------+-----------------------------+-----------+----------+-------------------
+ id          | character varying           |           | not null | gen_random_uuid()
+ name        | text                        |           | not null |
+ description | text                        |           | not null |
+ price       | numeric(10,2)               |           | not null |
+ image_url   | text                        |           | not null |
+ type        | text                        |           | not null |
+ age_range   | text                        |           | not null |
+ category    | text                        |           | not null |
+ stock       | integer                     |           |          |
+ is_active   | boolean                     |           | not null | true
+ created_at  | timestamp without time zone |           |          | now()
+ featured    | boolean                     |           |          | false
+ tags        | text[]                      |           |          |
+ image       | text                        |           |          |
+ updated_at  | timestamp without time zone |           |          | now()
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (id)
+Referenced by:
+    TABLE "order_items" CONSTRAINT "order_items_product_id_products_id_fk" FOREIGN KEY (product_id) REFERENCES products(id)
+    TABLE "user_favorites" CONSTRAINT "user_favorites_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+
+\d: extra argument "--" ignored
+\d: extra argument "Verificar" ignored
+\d: extra argument "que" ignored
+\d: extra argument "todos" ignored
+\d: extra argument "los" ignored
+\d: extra argument "productos" ignored
+\d: extra argument "tengan" ignored
+\d: extra argument "imagen" ignored
+\d: extra argument "y" ignored
+\d: extra argument "updated_at" ignored
+\d: extra argument "SELECT" ignored
+\d: extra argument "id," ignored
+\d: extra argument "name," ignored
+\d: extra argument "image," ignored
+\d: extra argument "image_url," ignored
+\d: extra argument "created_at," ignored
+\d: extra argument "updated_at" ignored
+\d: extra argument "FROM" ignored
+\d: extra argument "products;" ignored
+\d: extra argument "--" ignored
+\d: extra argument "Verificar" ignored
+\d: extra argument "conteo" ignored
+\d: extra argument "de" ignored
+\d: extra argument "productos" ignored
+\d: extra argument "activos" ignored
+\d: extra argument "SELECT" ignored
+\d: extra argument "COUNT(*)" ignored
+\d: extra argument "as" ignored
+\d: extra argument "total_productos" ignored
+\d: extra argument "FROM" ignored
+\d: extra argument "products" ignored
+\d: extra argument "WHERE" ignored
+\d: extra argument "is_active" ignored
+\d: extra argument "=" ignored
+\d: extra argument "true;" ignored
+\d: extra argument "--" ignored
+\d: extra argument "Verificar" ignored
+\d: extra argument "que" ignored
+\d: extra argument "no" ignored
+\d: extra argument "hay" ignored
+\d: extra argument "valores" ignored
+\d: extra argument "NULL" ignored
+\d: extra argument "críticos" ignored
+\d: extra argument "SELECT" ignored
+\d: extra argument "COUNT(*)" ignored
+\d: extra argument "as" ignored
+\d: extra argument "total," ignored
+\d: extra argument "COUNT(image)" ignored
+\d: extra argument "as" ignored
+\d: extra argument "con_imagen," ignored
+\d: extra argument "COUNT(updated_at)" ignored
+\d: extra argument "as" ignored
+\d: extra argument "con_updated_at," ignored
+\d: extra argument "COUNT(*)" ignored
+\d: extra argument "-" ignored
+\d: extra argument "COUNT(image)" ignored
+\d: extra argument "as" ignored
+\d: extra argument "sin_imagen," ignored
+\d: extra argument "COUNT(*)" ignored
+\d: extra argument "-" ignored
+\d: extra argument "COUNT(updated_at)" ignored
+\d: extra argument "as" ignored
+\d: extra argument "sin_updated_at" ignored
+\d: extra argument "FROM" ignored
+\d: extra argument "products;" ignored
+neondb=>

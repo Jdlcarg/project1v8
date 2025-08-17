@@ -1,0 +1,51 @@
+Necesito mejorar significativamente la sección de perfil de usuario de mi aplicación web. Actualmente tengo una web completa pero el perfil necesita un mejor diseño y funcionalidades adicionales para el cliente.
+
+MEJORAS REQUERIDAS PARA EL PERFIL:
+
+Diseño del Perfil de Usuario:
+
+Crear un diseño moderno y limpio con cards organizadas
+Incluir foto de perfil con opción de cambio
+Mostrar información personal de forma elegante (nombre, email, teléfono, dirección)
+Agregar estadísticas del usuario (pedidos realizados, productos favoritos, etc.)
+Implementar tabs/pestañas para organizar diferentes secciones
+Formulario de Seguimiento de Pedidos:
+
+Crear una sección donde el cliente pueda consultar el estado de sus pedidos
+Incluir campo de búsqueda por número de pedido
+Mostrar información detallada: fecha, productos, estado actual, tracking
+Implementar estados visuales: "Procesando", "En preparación", "Enviado", "Entregado"
+Agregar timeline/línea de tiempo del progreso del pedido
+Formulario de Contacto/Soporte:
+
+Crear formulario para consultas y reclamos
+Campos: tipo de consulta, asunto, descripción, adjuntar archivos
+Categorías: "Problema con pedido", "Consulta de producto", "Reclamo", "Sugerencia"
+Sistema de tickets con número de referencia
+Historial de Pedidos:
+
+Lista completa de pedidos anteriores
+Filtros por fecha, estado, monto
+Opción de reordenar productos anteriores
+Descargar facturas/comprobantes
+Lista de Deseos/Favoritos:
+
+Sección para productos guardados
+Opción de agregar a carrito desde favoritos
+Notificaciones de cambios de precio
+Configuración de Cuenta:
+
+Cambio de contraseña
+Preferencias de notificaciones
+Configuración de privacidad
+Opción de eliminar cuenta
+ESPECIFICACIONES TÉCNICAS:
+
+Usar diseño responsive para móvil y desktop
+Implementar validación de formularios
+Usar iconos modernos y colores consistentes con el tema actual
+Agregar loading states y mensajes de confirmación
+Implementar notificaciones toast para acciones exitosas/errores
+
+
+Por favor, implementa estas mejoras manteniendo la consistencia visual con el resto de la aplicación y asegurando una excelente experiencia de usuario tanto en desktop como móvil.

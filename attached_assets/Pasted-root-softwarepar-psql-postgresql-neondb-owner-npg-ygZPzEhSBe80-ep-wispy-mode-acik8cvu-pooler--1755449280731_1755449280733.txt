@@ -1,0 +1,190 @@
+root@softwarepar:~#  psql 'postgresql://neondb_owner:npg_ygZPzEhSBe80@ep-wispy-mode-acik8cvu-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+psql (17.5 (Ubuntu 17.5-1.pgdg24.04+1))
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off, ALPN: postgresql)
+Type "help" for help.
+
+neondb=> \dt
+                   List of relations
+ Schema |         Name          | Type  |    Owner
+--------+-----------------------+-------+--------------
+ public | admin_config          | table | neondb_owner
+ public | order_items           | table | neondb_owner
+ public | orders                | table | neondb_owner
+ public | password_reset_tokens | table | neondb_owner
+ public | products              | table | neondb_owner
+ public | users                 | table | neondb_owner
+(6 rows)
+
+neondb=> -- Agregar tracking_number a orders si no existe
+ALTER TABLE orders
+ADD COLUMN IF NOT EXISTS tracking_number TEXT;
+
+-- Crear tabla order_tracking
+CREATE TABLE IF NOT EXISTS order_tracking (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    status TEXT NOT NULL CHECK (status IN ('processing', 'preparing', 'shipped', 'delivered')),
+    description TEXT,
+    location TEXT,
+    estimated_delivery TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS order_tracking_order_id_idx ON order_tracking(order_id);
+CREATE INDEX IF NOT EXISTS order_tracking_status_idx ON order_tracking(status);
+NOTICE:  column "tracking_number" of relation "orders" already exists, skipping
+ALTER TABLE
+ERROR:  foreign key constraint "order_tracking_order_id_fkey" cannot be implemented
+DETAIL:  Key columns "order_id" and "id" are of incompatible types: uuid and character varying.
+ERROR:  relation "order_tracking" does not exist
+ERROR:  relation "order_tracking" does not exist
+neondb=> -- Crear tabla order_tracking con el tipo correcto
+CREATE TABLE IF NOT EXISTS order_tracking (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id VARCHAR NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    status TEXT NOT NULL CHECK (status IN ('processing', 'preparing', 'shipped', 'delivered')),
+    description TEXT,
+    location TEXT,
+    estimated_delivery TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS order_tracking_order_id_idx ON order_tracking(order_id);
+CREATE INDEX IF NOT EXISTS order_tracking_status_idx ON order_tracking(status);
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+neondb=> -- Crear tabla support_tickets
+CREATE TABLE IF NOT EXISTS support_tickets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    ticket_number TEXT NOT NULL UNIQUE,
+    type TEXT NOT NULL CHECK (type IN ('order', 'product', 'complaint', 'suggestion')),
+    subject TEXT NOT NULL,
+    description TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'in-progress', 'resolved', 'closed')),
+    priority TEXT NOT NULL DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high', 'urgent')),
+    assigned_to VARCHAR REFERENCES users(id),
+    resolution TEXT,
+    attachments JSONB,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    resolved_at TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS support_tickets_user_id_idx ON support_tickets(user_id);
+CREATE INDEX IF NOT EXISTS support_tickets_status_idx ON support_tickets(status);
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+neondb=> -- Crear tabla support_ticket_replies
+CREATE TABLE IF NOT EXISTS support_ticket_replies (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ticket_id UUID NOT NULL REFERENCES support_tickets(id) ON DELETE CASCADE,
+    user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    message TEXT NOT NULL,
+    is_from_support BOOLEAN NOT NULL DEFAULT FALSE,
+    attachments JSONB,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS support_ticket_replies_ticket_id_idx ON support_ticket_replies(ticket_id);
+CREATE TABLE
+CREATE INDEX
+neondb=> -- Crear tabla user_favorites
+CREATE TABLE IF NOT EXISTS user_favorites (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    product_id VARCHAR NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    UNIQUE(user_id, product_id)
+);
+
+CREATE INDEX IF NOT EXISTS user_favorites_user_id_idx ON user_favorites(user_id);
+CREATE INDEX IF NOT EXISTS user_favorites_product_id_idx ON user_favorites(product_id);
+
+-- Crear tabla user_stats
+CREATE TABLE IF NOT EXISTS user_stats (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+    total_orders INTEGER NOT NULL DEFAULT 0,
+    total_spent DECIMAL(12,2) NOT NULL DEFAULT 0,
+    favorite_products INTEGER NOT NULL DEFAULT 0,
+    last_order_date TIMESTAMP,
+    average_order_value DECIMAL(10,2) NOT NULL DEFAULT 0,
+    loyalty_points INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+neondb=> -- Crear tabla user_notification_preferences
+CREATE TABLE IF NOT EXISTS user_notification_preferences (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+    email_notifications BOOLEAN NOT NULL DEFAULT TRUE,
+    order_updates BOOLEAN NOT NULL DEFAULT TRUE,
+    promotional_emails BOOLEAN NOT NULL DEFAULT TRUE,
+    sms_notifications BOOLEAN NOT NULL DEFAULT FALSE,
+    push_notifications BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Crear tabla password_recovery_tokens
+CREATE TABLE IF NOT EXISTS password_recovery_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token TEXT NOT NULL UNIQUE,
+    expires_at TIMESTAMP NOT NULL,
+    used BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE TABLE
+CREATE TABLE
+neondb=> -- Crear estadísticas para usuarios existentes
+INSERT INTO user_stats (user_id, total_orders, total_spent, favorite_products)
+SELECT
+    u.id,
+    COALESCE(order_counts.total_orders, 0),
+    COALESCE(order_counts.total_spent, 0),
+    0
+FROM users u
+LEFT JOIN (
+    SELECT
+        user_id,
+        COUNT(*) as total_orders,
+        SUM(total::DECIMAL) as total_spent
+    FROM orders
+    GROUP BY user_id
+) order_counts ON u.id = order_counts.user_id
+ON CONFLICT (user_id) DO NOTHING;
+
+-- Crear preferencias de notificación para usuarios existentes
+INSERT INTO user_notification_preferences (user_id)
+SELECT id FROM users
+ON CONFLICT (user_id) DO NOTHING;
+INSERT 0 4
+INSERT 0 4
+neondb=> \dt
+                       List of relations
+ Schema |             Name              | Type  |    Owner
+--------+-------------------------------+-------+--------------
+ public | admin_config                  | table | neondb_owner
+ public | order_items                   | table | neondb_owner
+ public | order_tracking                | table | neondb_owner
+ public | orders                        | table | neondb_owner
+ public | password_recovery_tokens      | table | neondb_owner
+ public | password_reset_tokens         | table | neondb_owner
+ public | products                      | table | neondb_owner
+ public | support_ticket_replies        | table | neondb_owner
+ public | support_tickets               | table | neondb_owner
+ public | user_favorites                | table | neondb_owner
+ public | user_notification_preferences | table | neondb_owner
+ public | user_stats                    | table | neondb_owner
+ public | users                         | table | neondb_owner
+(13 rows)
+
+neondb=>

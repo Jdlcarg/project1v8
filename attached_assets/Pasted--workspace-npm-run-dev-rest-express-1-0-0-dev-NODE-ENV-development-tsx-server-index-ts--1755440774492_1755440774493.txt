@@ -1,0 +1,37 @@
+~/workspace$ npm run dev
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+
+2:23:16 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+2:23:23 PM [express] GET /api/products 304 in 559ms :: [{"id":"bc2e96d9-ff52-4dea-b314-ad3670ded740"…
+2:24:07 PM [express] GET /api/products 304 in 528ms :: [{"id":"bc2e96d9-ff52-4dea-b314-ad3670ded740"…
+Error sending email: Error: Invalid login: 534-5.7.9 Please log in with your web browser and then try again. For more
+534-5.7.9 information, go to
+534 5.7.9  https://support.google.com/mail/?p=WebLoginRequired 71dfb90a1353d-53b2bf26276sm1301985e0c.32 - gsmtp
+    at SMTPConnection._formatError (/home/runner/workspace/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/home/runner/workspace/node_modules/nodemailer/lib/smtp-connection/index.js:1588:34)
+    at SMTPConnection.<anonymous> (/home/runner/workspace/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/home/runner/workspace/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/home/runner/workspace/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/home/runner/workspace/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at TLSWrap.onStreamRead (node:internal/stream_base_commons:191:23) {
+  code: 'EAUTH',
+  response: '534-5.7.9 Please log in with your web browser and then try again. For more\n' +
+    '534-5.7.9 information, go to\n' +
+    '534 5.7.9  https://support.google.com/mail/?p=WebLoginRequired 71dfb90a1353d-53b2bf26276sm1301985e0c.32 - gsmtp',
+  responseCode: 534,
+  command: 'AUTH PLAIN'
+}
+Recovery link for jdlcarg@gmail.com: http://localhost:5000/password-recovery?token=5hqjaqpe9n9zpp50w73wo
+2:25:14 PM [express] POST /api/auth/password-recovery 200 in 1112ms :: {"message":"Email de recupera…
+2:25:54 PM [express] GET /api/products 304 in 528ms :: [{"id":"bc2e96d9-ff52-4dea-b314-ad3670ded740"…
+

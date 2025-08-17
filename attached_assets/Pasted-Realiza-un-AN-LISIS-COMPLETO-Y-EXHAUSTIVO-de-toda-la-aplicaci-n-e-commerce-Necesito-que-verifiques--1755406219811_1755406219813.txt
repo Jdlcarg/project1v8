@@ -1,0 +1,67 @@
+Realiza un ANÁLISIS COMPLETO Y EXHAUSTIVO de toda la aplicación e-commerce. Necesito que verifiques CADA funcionalidad y corrijas TODO lo que encuentres mal.
+
+ANÁLISIS DE BASE DE DATOS:
+
+Verificar conexión real a Neon: postgresql://neondb_owner:npg_ygZPzEhSBe80@ep-wispy-mode-acik8cvu-pooler.sa-east-1.aws.neon.tech/neondb
+Verificar todas las tablas existen: users, products, orders, order_items, admin_config
+Verificar estructura de cada tabla (columnas, tipos, constraints)
+Verificar datos iniciales (6 productos, usuario admin)
+Testear todas las operaciones CRUD en cada tabla
+PRUEBAS FUNCIONALES COMPLETAS:
+
+AUTENTICACIÓN:
+
+✅ Login admin funciona
+✅ Crear cuenta nueva de usuario
+✅ Validaciones de formularios
+✅ Tokens JWT funcionan
+✅ Protección de rutas admin
+PRODUCTOS:
+
+✅ Listar productos desde DB
+✅ Filtros por edad/categoría funcionan
+✅ Agregar nuevo producto (admin)
+✅ Editar producto existente
+✅ Eliminar producto
+✅ Validar stock
+CARRITO Y PEDIDOS:
+
+✅ Agregar productos al carrito
+✅ Modificar cantidades
+✅ Eliminar del carrito
+✅ Proceso de checkout completo
+✅ Crear pedido en DB
+✅ Ver historial de pedidos
+PANEL ADMIN:
+
+✅ Dashboard con estadísticas reales de DB
+✅ Gestión de productos CRUD completa
+✅ Ver todos los pedidos
+✅ CONFIGURACIÓN: Guardar/cargar Gmail y MercadoPago (CORREGIR ERROR ACTUAL)
+APIS Y ENDPOINTS:
+
+✅ Testear TODOS los endpoints con curl
+✅ Verificar métodos HTTP correctos
+✅ Validar respuestas JSON
+✅ Manejo de errores
+FRONTEND:
+
+✅ Todas las páginas cargan sin errores
+✅ Navegación funciona
+✅ Formularios validan correctamente
+✅ Toasts de confirmación aparecen
+✅ Responsive design
+CORRECCIONES REQUERIDAS:
+
+CRÍTICO: Error actual /api/admin/config método HTTP
+Cualquier ruta rota
+Validaciones faltantes
+Errores de consola
+Problemas de UI/UX
+ENTREGA:
+
+Reporte detallado de TODO lo encontrado
+Lista de correcciones realizadas
+Confirmación que TODA la aplicación funciona 100%
+Screenshots de pruebas exitosas
+IMPORTANTE: No te saltes NADA. Quiero una aplicación perfectamente funcional sin errores.

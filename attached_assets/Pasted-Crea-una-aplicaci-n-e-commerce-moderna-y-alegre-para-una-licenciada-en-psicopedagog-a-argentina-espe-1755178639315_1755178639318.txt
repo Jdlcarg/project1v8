@@ -1,0 +1,54 @@
+Crea una aplicación e-commerce moderna y alegre para una licenciada en psicopedagogía argentina especializada en juegos educativos.
+
+DISEÑO ESPECÍFICO PARA EL RUBRO:
+- Paleta de colores cálidos y educativos: Verde menta (#10B981), Azul cielo (#60A5FA), Rosa coral (#FB7185), Amarillo suave (#FBBF24), Violeta (#A855F7)
+- Estilo lúdico y profesional: formas redondeadas, iconos educativos, ilustraciones amigables
+- Tipografía moderna: Inter/Poppins con jerarquía clara
+- Micro-animaciones suaves en botones y cards
+- Gradientes sutiles en backgrounds
+- Iconos temáticos: puzzle, cerebro, corazón, estrella, libro, juguete
+
+PRODUCTOS OBLIGATORIOS:
+FÍSICOS:
+- "Kit Estimulación Cognitiva" - $18500 - Stock: 12 - Edad: 3-8 años - Imagen: kit de juegos coloridos
+- "Set Terapia Ocupacional" - $35800 - Stock: 8 - Edad: 4-12 años - Imagen: herramientas terapéuticas
+- "Juego Mesa Habilidades Sociales" - $24300 - Stock: 15 - Edad: 7-15 años - Imagen: juego de mesa educativo
+
+DIGITALES:
+- "Actividades Lectoescritura Digital" - $12900 - Edad: 5-10 años - Imagen: tablet con letras
+- "Programa Inteligencia Emocional" - $15600 - Edad: 6-14 años - Imagen: niños expresando emociones
+- "App Matemáticas Adaptativa" - $9800 - Edad: 8-16 años - Imagen: números y formas geométricas
+
+FUNCIONALIDADES CLAVE:
+1. Landing page atractiva con hero section educativo
+2. Catálogo con filtros por edad, tipo y categoría
+3. Cards de productos con badges de edad coloridos
+4. Carrito con animaciones suaves
+5. Checkout con validaciones completas
+6. Panel admin moderno con dashboard
+7. Sistema de pedidos con tracking visual
+8. Autenticación JWT simulada
+9. Responsive design perfecto
+
+CARACTERÍSTICAS VISUALES ESPECÍFICAS:
+- Hero section con ilustración de niños aprendiendo
+- Cards con hover effects y gradientes suaves
+- Filtros con chips coloridos y iconos educativos
+- Badges de edad con colores diferenciados (3-5: verde, 6-8: azul, 9-12: rosa, 13+: violeta)
+- Botones con gradientes y sombras modernas
+- Footer con información profesional de la licenciada
+- Sección testimonios de padres
+- Página "Sobre la profesional" con credenciales
+
+STACK TÉCNICO:
+- React + TypeScript + Tailwind CSS
+- Context API para estado global
+- React Router para navegación
+- React Hook Form + Yup para validaciones
+- React Hot Toast para notificaciones
+- Lucide React para iconos
+- LocalStorage para persistencia
+
+Usuario admin: admin@test.com / admin123
+
+Genera una aplicación completa, moderna y específica para el rubro educativo infantil con diseño alegre y profesional.
